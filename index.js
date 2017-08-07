@@ -174,7 +174,7 @@
   }
 
   return {
-    convertArabic: function(normal) {
+    convertArabic: function(normal, optUseOriginalForIsolated) {
       var crep,
         combcrep,
         shaped = '';
@@ -250,7 +250,12 @@
               shaped += String.fromCharCode(crep[2]);
               continue;
             } else /* Isolated */ {
-              shaped += String.fromCharCode(crep[1]);
+              // A lot of Arabic font files are missing glyphs in the isolated block
+              // this allows the shaper to just use the original characters instead
+              // which should not mess up the shaping process.
+              shaped += optUseOriginalForIsolated
+                  ? String.fromCharCode(crep[0])
+                  : String.fromCharCode(crep[1]);
             }
         } else {
           shaped += String.fromCharCode(current);
